@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>The Beach Club</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manjari:wght@100;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <section class="carrito" id="carrito">
+      <button class="close" onclick="close_carrito()"></button>
+      <h1>MY CART</h1>
+      <div class="lista_compras" id="lista_compras">
+      </div>
+      <div class="button_container">
+        <span>SUBTOTAL $ <span id="subtotal"></span></span>
+        <button class="payment">PROCEED TO PAY</button>
+      </div>
+    </section>
+    <section class="img_container">
+      <nav>
+          <span class="barra">HOME</span>
+          <span class="barra"> ABOUTUS</span>
+          <span class="void"></span>
+          <img src="img\logo.png" alt="The Beach Club Logo ">
+          <span class="barra">COLLECTIONS</span>
+          <span class="shopping_bag" onclick="open_carrito()"> <span class=" notificacion" id="notificacion"> </span> </span>
+      </nav>
+      <h2 class="main_tittle">VIEW THE SUMMER <br> COLLECTION</h2>
+    </section>
+    <main>
+      <div class="product_container">
+        <div class="container1">
+          <h3>01</h3>
+          <span class="imagenes_fondo" style="background-image: url('img/surf back1.jpeg');">
+            <button class="add" onclick="add_item('1000','img/tabla1.png','TABLA ZEUS','TABLA BLANCA','img/surf back1.jpeg',this)"> + ADD TO CART</button> 
+            <img class="tabla" src="img\tabla1.png" alt="imagen de tabla"> 
+            <p class="descripcion">Clásica y minimalista. Muy usada por profesionales. Transmite limpieza y enfoque técnico.</p>
+          </span>
+          <h2>TABLA ZEUS</h2>
+        </div>
+
+         <div class="container1">
+          <h3>02</h3>
+          <span class="imagenes_fondo" style="background-image: url('img/surf back2.jpeg');"><button class="add" onclick="add_item('1000','img/tabla2.png','TABLA ','TABLA AZUL','img/surf back2.jpeg',this)"> + ADD TO CART</button> <img class="tabla" src="img\tabla2.png" alt="imagen de tabla"> </span>
+          <h2>FEATURED PRODUCTS</h2>
+        </div>
+
+         <div class="container1">
+          <h3>03</h3>
+          <span class="imagenes_fondo" style="background-image: url('img/surf back3.png');"><button class="add" onclick="add_item('1000','img/tabla3.png','TABLA ','TABLA ROSA','img/surf back3.png',this)"> + ADD TO CART</button> <img class="tabla" src="img\tabla3.png" alt="imagen de tabla"> </span>
+          <h2>ALL COLLECTIONS</h2>
+        </div>
+      </div>
+    </main>
+  </body>
+  <footer>
+    <div class="main_footer">
+      <div class="fotter_info">
+        <span>Privacy policy</span>
+        <span>Purchasing policy</span>
+      </div>
+      <div class="logo_footer">
+      <span>2025 l The Beach Club</span>
+    </div>
+    </div>
+  </footer>
+</html>
+<script>
+  function open_carrito(){
+    const carrito = document.getElementById('carrito')
+    carrito.style.display='flex'
+  }
+  function close_carrito(){
+    const carrito = document.getElementById('carrito')
+    carrito.style.display='none'
+  }
+  function add_item(PRECIO, FOTO, TITTLE, DESCRIPCION, FONDO,element){
+    const compras = document.querySelectorAll('.compra') 
+    const similitudes = document.querySelectorAll(`.${TITTLE.replace(/\s+/g, "")}`)
+    show_active()
+    if (compras.length > 0){
+      if(similitudes.length>0){
+      const cantidad = similitudes[0].querySelector('#cantidad')
+      const precio = similitudes[0].querySelector('#precio')
+      const total = Number(cantidad.innerText) + 1
+      cantidad.innerText=total
+      precio.innerText=total*PRECIO 
+      update_subtotal()
+      return
+    }
+    }
+    const lista_compras =document.getElementById('lista_compras')
+    const compra = document.createElement('div')
+    compra.classList.add('compra')
+    compra.classList.add(TITTLE.replace(/\s+/g, ""))
+    const content = `<div class="info_main">
+            <div class="producto" style="background-image: url('${FONDO}');">
+             <img src="${FOTO}" alt="">
+            </div>
+            <div class="texto_producto">
+              <h3>${TITTLE}</h3>
+              <div > <span> $<h4 class='precio' id='precio'>${PRECIO}</h4></span>  <span> Qt:<span id='cantidad'>1</span></span> </div>
+            </div>
+          </div>
+         <button class="borrar_boton" onclick ='delet_item(this)'> </button>`
+    compra.innerHTML=content
+    lista_compras.appendChild(compra)
+    update_subtotal()  }
+  function delet_item(element){
+    const compra = element.closest('.compra')
+    const cantidad = compra.querySelector('#cantidad')
+    const precio_total = compra.querySelector('#precio')
+    const precio_unitario =Number(precio_total.innerHTML) / Number(cantidad.innerHTML)
+    console.log(cantidad);
+    if(Number(cantidad.innerHTML) > 1){
+      cantidad.innerHTML=Number(cantidad.innerHTML )- 1
+      precio_total.innerHTML = precio_unitario *( Number(cantidad.innerHTML) )
+      console.log (precio_unitario *( Number(cantidad.innerHTML) -1))
+    }
+    else{
+    compra.remove()
+    const compras = document.querySelectorAll('.compra') 
+    if(compras.length <= 0 ){
+      hide()
+    }
+    }
+    update_subtotal()
+  }
+function update_subtotal(){
+  const precios = document.querySelectorAll('.precio')
+  const suma = Array.from(precios).reduce((total, elem) => total + Number(elem.textContent), 0);
+  const subtotal=document.getElementById('subtotal')
+  subtotal.innerText=suma
+}
+function show_active(){
+  const notificacion = document.getElementById('notificacion')
+  notificacion.style.display='flex'
+}
+function hide(){
+  const notificacion = document.getElementById('notificacion')
+  notificacion.style.display='none'
+}
+
+</script>
